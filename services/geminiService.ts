@@ -396,16 +396,60 @@ export const generateImage = async (
       }),
     });
 
-    if (!res.ok) {
-      throw new Error(`HTTP error ${res.status}`);
+export const generateImage = async (
+  prompt: string,
+  aspectRatio: '1:1' | '16:9' | '9:16' | '4:3' | '3:4' = '1:1',
+  numberOfImages: number = 1
+): Promise<ImageData[]> => {
+  try {
+    const trimmedPrompt = prompt.trim();
+    if (!trimmedPrompt) {
+      throw new Error("Prompt is empty.");
     }
 
-    const data = await res.json();
+    const res = await fetch("https://kangsik.pythonanywhere.com/canvas/generate-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: trimmedPrompt,
+        aspect_ratio: aspectRatio,
+        size: "1K",
+      }),
+    });
 
-    if (!data.ok || !data.image_base64) {
-      const msg = data.error || "Image generation failed (no image_base64).";
+    let data: any = null;
+    try {
+      data = await res.json();
+    } catch {
+      // JSON 파싱 실패 시는 그대로 진행
+    }
+
+    if (!res.ok || !data || data.ok === false) {
+      const backendMessage = data && data.error ? data.error : "";
+      const msg = backendMessage || `HTTP error ${res.status}`;
       throw new Error(msg);
     }
+
+    if (!data.image_base64) {
+      throw new Error("Image generation failed (no image_base64).");
+    }
+
+    const image: ImageData = {
+      id: crypto.randomUUID(),
+      mimeType: "image/jpeg",
+      data: data.image_base64,
+    };
+
+    return [image];
+  } catch (error) {
+    console.error("Error generating image via backend:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate image (backend): ${errorMessage}`);
+  }
+};
+
 
     // 백엔드에서 JPEG base64로 반환하므로 mimeType은 image/jpeg
     const image: ImageData = {
