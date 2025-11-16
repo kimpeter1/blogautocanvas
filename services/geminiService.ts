@@ -369,42 +369,60 @@ ${baseInstructions}`;
     }
 };
 
+// ✅ PythonAnywhere 백엔드를 사용하는 이미지 생성 함수로 변경
 export const generateImage = async (
-    prompt: string, 
-    aspectRatio: '1:1' | '16:9' | '9:16' | '4:3' | '3:4' = '1:1',
-    numberOfImages: number = 1
+  prompt: string,
+  aspectRatio: '1:1' | '16:9' | '9:16' | '4:3' | '3:4' = '1:1',
+  numberOfImages: number = 1   // 현재는 1장만 생성하지만 타입 호환을 위해 유지
 ): Promise<ImageData[]> => {
-    try {
-        const englishPrompt = await translateToEnglish(prompt);
-        if (!englishPrompt) {
-            throw new Error("Prompt translation failed.");
-        }
-
-        const response = await ai.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt: englishPrompt,
-            config: {
-                numberOfImages: numberOfImages,
-                outputMimeType: 'image/png',
-                aspectRatio: aspectRatio,
-            },
-        });
-
-        if (!response.generatedImages || response.generatedImages.length === 0) {
-            throw new Error("Image generation failed, no images returned.");
-        }
-        
-        return response.generatedImages.map(img => ({
-            id: crypto.randomUUID(),
-            mimeType: 'image/png', // The API is configured to return PNG
-            data: img.image.imageBytes,
-        }));
-    } catch (error) {
-        console.error("Error generating image:", error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error(`Failed to generate image: ${errorMessage}`);
+  try {
+    const trimmedPrompt = prompt.trim();
+    if (!trimmedPrompt) {
+      throw new Error("Prompt is empty.");
     }
+
+    // 필요하다면 translateToEnglish 사용 가능 (우선 한글 그대로도 잘 됩니다)
+    // const englishPrompt = await translateToEnglish(trimmedPrompt) || trimmedPrompt;
+
+    const res = await fetch("https://kangsik.pythonanywhere.com/canvas/generate-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: trimmedPrompt,
+        aspect_ratio: aspectRatio,
+        size: "1K",
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (!data.ok || !data.image_base64) {
+      const msg = data.error || "Image generation failed (no image_base64).";
+      throw new Error(msg);
+    }
+
+    // 백엔드에서 JPEG base64로 반환하므로 mimeType은 image/jpeg
+    const image: ImageData = {
+      id: crypto.randomUUID(),
+      mimeType: "image/jpeg",
+      data: data.image_base64, // 나머지 코드에서 inlineData.data 로 사용 가능
+    };
+
+    // 기존 시그니처를 유지하기 위해 배열로 반환
+    return [image];
+  } catch (error) {
+    console.error("Error generating image via backend:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to generate image (backend): ${errorMessage}`);
+  }
 };
+
 
 /**
  * Generic function to generate mixed text and image content from a text prompt and an optional base image.
