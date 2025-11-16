@@ -1,0 +1,274 @@
+/* index.css - BLOG AUTO CANVAS 전용 스타일
+   기존 index.html의 <style> 블록을 외부 CSS로 분리한 버전입니다.
+*/
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #FFFFFF; /* White background */
+}
+
+/* Custom scrollbar for the new theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #CFE8E6; /* Lighter teal */
+}
+::-webkit-scrollbar-thumb {
+  background: #00796B; /* Dark teal */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #004D40; /* Darker teal */
+}
+
+/* --- NEUMORPHISM UI KIT --- */
+:root {
+  --neu-bg: #EBFBFA;
+  --neu-primary: #00796B;
+  --neu-primary-text: #FFFFFF;
+  --neu-text: #4A5568;
+  --neu-shadow-light: rgba(255, 255, 255, 0.7);
+  --neu-shadow-dark: rgba(163, 177, 198, 0.6);
+  --neu-border-radius: 12px;
+  --neu-border-radius-sm: 8px;
+  --neu-action-button-bg: #4dd0e1; /* Bright Cyan */
+  --neu-action-button-hover-bg: #00bcd4; /* Cyan */
+  --neu-action-button-active-bg: #0097a7; /* Darker Cyan */
+}
+
+@keyframes loading-gradient {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Card */
+.neu-card {
+  background: var(--neu-bg);
+  border-radius: var(--neu-border-radius);
+  box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
+}
+.neu-card-inset {
+  background: var(--neu-bg);
+  border-radius: var(--neu-border-radius);
+  box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+}
+
+/* Button */
+.neu-button {
+  background: var(--neu-bg);
+  border: none;
+  border-radius: var(--neu-border-radius);
+  box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.8), -6px -6px 12px rgba(255, 255, 255, 0.9);
+  color: var(--neu-text);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.neu-button:hover:not(:disabled) {
+  box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.9), -8px -8px 16px rgba(255, 255, 255, 1);
+}
+.neu-button:active:not(:disabled),
+.neu-button-active {
+  box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+  transform: translateY(1px);
+}
+.neu-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+}
+
+.neu-button-primary,
+.neu-button-secondary {
+  background: var(--neu-action-button-bg);
+  color: #004D40;
+}
+.neu-button-primary:hover:not(:disabled),
+.neu-button-secondary:hover:not(:disabled) {
+  background: #00bcd4; /* Deep Sea Blue */
+  color: white;
+}
+
+.neu-button-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: loading-gradient 1.5s infinite linear;
+}
+
+.neu-button-sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: var(--neu-border-radius-sm);
+}
+.neu-button-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+.neu-button-icon-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* Inputs */
+.neu-input,
+.neu-textarea,
+.neu-select {
+  background: var(--neu-bg);
+  border-radius: var(--neu-border-radius-sm);
+  border: none;
+  box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
+  padding: 0.75rem;
+  width: 100%;
+  color: var(--neu-text);
+  transition: all 0.2s ease-in-out;
+}
+.neu-input:focus,
+.neu-textarea:focus,
+.neu-select:focus {
+  outline: none;
+  box-shadow: inset 3px 3px 6px var(--neu-shadow-dark),
+              inset -3px -3px 6px var(--neu-shadow-light),
+              0 0 0 2px black;
+}
+.neu-select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300796B%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 8px 10px;
+  padding-right: 2rem;
+}
+
+/* Range Slider */
+.neu-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--neu-bg);
+  border-radius: 5px;
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+  outline: none;
+}
+.neu-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--neu-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 2px 2px 4px var(--neu-shadow-dark), -2px -2px 4px var(--neu-shadow-light);
+}
+.neu-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--neu-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 2px 2px 4px var(--neu-shadow-dark), -2px -2px 4px var(--neu-shadow-light);
+}
+
+/* Switch */
+.neu-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+}
+.neu-switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.neu-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--neu-bg);
+  transition: .4s;
+  border-radius: 24px;
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark),
+              inset -2px -2px 4px var(--neu-shadow-light);
+}
+.neu-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 2px 2px 4px var(--neu-shadow-dark),
+              -1px -1px 2px var(--neu-shadow-light);
+}
+.neu-switch-input:checked + .neu-switch-slider {
+  background-color: var(--neu-primary);
+}
+.neu-switch-input:checked + .neu-switch-slider:before {
+  transform: translateX(24px);
+  box-shadow: inset 1px 1px 2px var(--neu-shadow-dark);
+  background-color: #f0f0f0;
+}
+
+/* Checkbox */
+.neu-checkbox-input {
+  display: none;
+}
+.neu-checkbox-box {
+  width: 20px;
+  height: 20px;
+  background: var(--neu-bg);
+  border-radius: 4px;
+  box-shadow: inset 2px 2px 4px var(--neu-shadow-dark),
+              inset -2px -2px 4px var(--neu-shadow-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+.neu-checkbox-input:checked + .neu-checkbox-box {
+  box-shadow: 2px 2px 4px var(--neu-shadow-dark),
+              -2px -2px 4px var(--neu-shadow-light);
+}
+.neu-checkbox-box svg {
+  width: 14px;
+  height: 14px;
+  color: var(--neu-primary);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s ease-in-out;
+}
+.neu-checkbox-input:checked + .neu-checkbox-box svg {
+  opacity: 1;
+  transform: scale(1);
+}
